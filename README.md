@@ -15,6 +15,11 @@ huaji calculator
 | **标准** | 四则运算、括号、百分比 `%`、表达式实时显示、历史记录（点击回填） |
 | **科学** | `sin/cos/tan/asin/acos/atan`（角度/弧度切换）、`ln/log/log2/exp`、`√`、`x^y`、`x²`、`n!`、`1/x`、`π`、`e`、隐式乘法（`2π`、`5(3+4)`）、一元负号 |
 | **程序员** | 64 位整数，DEC/HEX/OCT/BIN 四进制同步显示、`AND/OR/XOR/NOT`、左右移位 `« »`，按键随进制自动禁用 |
+| **换算** | 长度/面积/重量/温度/速度/数据/时间 7 大类单位换算，一键交换单位 |
+
+在线地址：
+- GitHub Pages：<https://yuhaoxuan2016.github.io/huaji-calculator/>
+- 腾讯云 CloudBase 静态托管：<https://rabbit-d5gnguauw0cabef7f-1307999692.tcloudbaseapp.com/calc/>
 
 通用特性：
 - **PWA（与刷题宝同款）**：`manifest.webmanifest` + 手写 `sw.js`（离线优先、自动更新），手机/桌面浏览器「安装」后获得独立应用窗口，无网也能用

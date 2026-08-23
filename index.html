@@ -121,6 +121,26 @@
   button.danger { background: var(--btn2); color: var(--danger); font-size: 17px; }
   button.wide { grid-column: 1 / -1; }
   button:disabled { opacity: 0.32; cursor: not-allowed; }
+  .conv-box { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .conv-box label { font-size: 12px; color: var(--muted); font-weight: 600; display: flex; flex-direction: column; gap: 4px; }
+  .conv-box select, .conv-box input {
+    width: 100%; background: var(--btn); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 10px; padding: 8px 10px; font-size: 15px; font-family: inherit; outline: none;
+  }
+  .conv-box select:focus, .conv-box input:focus { border-color: var(--green); }
+  .conv-row { display: flex; gap: 8px; align-items: center; }
+  .conv-row select { flex: 1; }
+  .conv-swap {
+    flex: none; width: 40px; height: 38px; border: none; border-radius: 10px; cursor: pointer;
+    background: var(--green); color: #fff; font-size: 17px; font-weight: 700;
+  }
+  .conv-swap:hover { filter: brightness(1.05); }
+  .conv-result {
+    background: var(--ink); color: #fff; border-radius: 12px; padding: 12px 14px;
+    font-size: 22px; font-weight: 600; text-align: right; font-family: Consolas, monospace;
+    min-height: 50px; word-break: break-all;
+  }
+  .conv-result small { display: block; color: #9fb2a8; font-size: 12px; font-weight: 400; }
   .history { border-top: 1px solid var(--line); padding: 10px 16px 12px; max-height: 170px; overflow-y: auto; }
   .history h2 { font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 6px; }
   .history .row { display: flex; justify-content: space-between; gap: 12px; padding: 5px 8px; border-radius: 8px; font-size: 13px; cursor: pointer; }
@@ -148,6 +168,7 @@
       <button class="mode-tab active" data-mode="std">标准</button>
       <button class="mode-tab" data-mode="sci">科学</button>
       <button class="mode-tab" data-mode="prog">程序员</button>
+      <button class="mode-tab" data-mode="conv">换算</button>
     </div>
   </header>
 
@@ -246,12 +267,29 @@
     </div>
   </div>
 
+  <div class="panel-conv" style="display:none;">
+    <div class="conv-box">
+      <label>换算类型
+        <select id="conv-cat"></select>
+      </label>
+      <label>数值
+        <input id="conv-input" type="text" inputmode="decimal" value="1" autocomplete="off" spellcheck="false">
+      </label>
+      <div class="conv-row">
+        <select id="conv-from"></select>
+        <button class="conv-swap" id="conv-swap" title="交换单位">⇄</button>
+        <select id="conv-to"></select>
+      </div>
+      <div class="conv-result" id="conv-result">—</div>
+    </div>
+  </div>
+
   <div class="history">
     <h2>历史记录（点击回填）</h2>
     <div id="history-list"></div>
   </div>
 
-  <footer>小时候的练习存档 · <b>现在是真·计算器了</b> /滑稽 · <span id="ver">v2.1 PWA</span></footer>
+  <footer>小时候的练习存档 · <b>现在是真·计算器了</b> /滑稽 · <span id="ver">v2.2 PWA</span></footer>
 </div>
 
 <script>
@@ -305,6 +343,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   }
   function render() {
     if (state.mode === 'prog') { updateProgDisplay(); return; }
+    if (state.mode === 'conv') { convRender(); return; }
     var s = expr === '' ? fmt(lastResult == null ? 0 : lastResult) : expr;
     if (s.length > 14) valueEl.classList.add('small'); else valueEl.classList.remove('small');
     valueEl.textContent = s;
@@ -322,9 +361,12 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     document.querySelector('.panel-std').style.display = m === 'std' ? '' : 'none';
     document.querySelector('.panel-sci').style.display = m === 'sci' ? '' : 'none';
     document.querySelector('.panel-prog').style.display = m === 'prog' ? '' : 'none';
-    memBar.style.display = m === 'prog' ? 'none' : '';
+    document.querySelector('.panel-conv').style.display = m === 'conv' ? '' : 'none';
+    memBar.style.display = (m === 'prog' || m === 'conv') ? 'none' : '';
     $('prog-rows').style.display = m === 'prog' ? 'flex' : 'none';
-    if (m === 'prog') updateProgDisplay(); else render();
+    if (m === 'prog') updateProgDisplay();
+    else if (m === 'conv') convRender();
+    else render();
   }
 
   /* ================= 历史（本地持久化） ================= */
@@ -643,6 +685,92 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     exprEl.textContent = P.acc == null ? '\u00a0' : P.acc + ' ' + (P.op || '');
   }
 
+  /* ================= 单位换算 ================= */
+  var CONV = {
+    '长度': { base: '米', units: [['毫米', 0.001], ['厘米', 0.01], ['米', 1], ['千米', 1000], ['英寸', 0.0254], ['英尺', 0.3048], ['码', 0.9144], ['英里', 1609.344], ['海里', 1852], ['市里', 500]] },
+    '面积': { base: '平方米', units: [['平方厘米', 0.0001], ['平方米', 1], ['公顷', 10000], ['平方千米', 1000000], ['亩', 666.6666666667], ['平方英尺', 0.09290304], ['平方英寸', 0.00064516], ['英亩', 4046.8564224]] },
+    '重量': { base: '千克', units: [['毫克', 0.000001], ['克', 0.001], ['千克', 1], ['吨', 1000], ['磅', 0.45359237], ['盎司', 0.028349523125], ['斤', 0.5], ['两', 0.05], ['克拉', 0.0002]] },
+    '温度': { base: '摄氏度', temp: true, units: [['摄氏度', 'C'], ['华氏度', 'F'], ['开尔文', 'K']] },
+    '速度': { base: '米/秒', units: [['米/秒', 1], ['千米/时', 0.2777777777778], ['英里/时', 0.44704], ['节', 0.5144444444444], ['马赫', 340.3]] },
+    '数据': { base: '字节', units: [['位', 0.125], ['字节', 1], ['KB', 1024], ['MB', 1048576], ['GB', 1073741824], ['TB', 1099511627776]] },
+    '时间': { base: '秒', units: [['毫秒', 0.001], ['秒', 1], ['分钟', 60], ['小时', 3600], ['天', 86400], ['周', 604800], ['月', 2592000], ['年', 31536000]] }
+  };
+  var conv = { cat: '长度', from: '米', to: '英尺', input: '1' };
+  var convCatEl = $('conv-cat'), convFromEl = $('conv-from'), convToEl = $('conv-to'),
+      convInputEl = $('conv-input'), convResultEl = $('conv-result');
+
+  function convFillSelect(sel, cat) {
+    sel.innerHTML = '';
+    CONV[cat].units.forEach(function (u) {
+      var o = document.createElement('option');
+      o.textContent = u[0]; o.value = u[0];
+      sel.appendChild(o);
+    });
+  }
+  function convRender() {
+    // 填充分类与单位（保持当前选择）
+    if (convCatEl.innerHTML === '') {
+      Object.keys(CONV).forEach(function (c) {
+        var o = document.createElement('option');
+        o.textContent = c; o.value = c;
+        convCatEl.appendChild(o);
+      });
+    }
+    convCatEl.value = conv.cat;
+    convFillSelect(convFromEl, conv.cat);
+    convFillSelect(convToEl, conv.cat);
+    convFromEl.value = conv.from; convToEl.value = conv.to;
+    convInputEl.value = conv.input;
+    convRun();
+  }
+  function convToC(val, unit) {
+    if (unit === 'C') return val;
+    if (unit === 'F') return (val - 32) * 5 / 9;
+    return val - 273.15;
+  }
+  function convFromC(val, unit) {
+    if (unit === 'C') return val;
+    if (unit === 'F') return val * 9 / 5 + 32;
+    return val + 273.15;
+  }
+  function convRun() {
+    conv.input = convInputEl.value;
+    var v = parseFloat(conv.input);
+    if (isNaN(v)) { convResultEl.innerHTML = '—'; return; }
+    var cat = CONV[conv.cat];
+    var out;
+    if (cat.temp) {
+      var fCode = null, tCode = null;
+      cat.units.forEach(function (u) { if (u[0] === conv.from) fCode = u[1]; if (u[0] === conv.to) tCode = u[1]; });
+      var c = convToC(v, fCode);
+      if (!isFinite(c) || isNaN(c)) { convResultEl.innerHTML = '—'; return; }
+      out = convFromC(c, tCode);
+    } else {
+      var fu = null, tu = null;
+      cat.units.forEach(function (u) { if (u[0] === conv.from) fu = u[1]; if (u[0] === conv.to) tu = u[1]; });
+      if (fu == null || tu == null) return;
+      out = v * fu / tu;
+    }
+    var res = fmt(out);
+    conv.lastRes = res;
+    convResultEl.innerHTML = res + '<small>' + conv.from + ' → ' + conv.to + '</small>';
+  }
+  convCatEl.addEventListener('change', function () {
+    var c = convCatEl.value;
+    if (CONV[c] == null) return;
+    conv.cat = c; conv.from = CONV[c].units[0][0]; conv.to = CONV[c].units[1] ? CONV[c].units[1][0] : CONV[c].units[0][0];
+    convRender();
+  });
+  convFromEl.addEventListener('change', function () { conv.from = convFromEl.value; convRun(); });
+  convToEl.addEventListener('change', function () { conv.to = convToEl.value; convRun(); });
+  convInputEl.addEventListener('input', function () { convRun(); });
+  convInputEl.addEventListener('keydown', function (e) { e.stopPropagation(); });
+  $('conv-swap').addEventListener('click', function () {
+    var t = conv.from; conv.from = conv.to; conv.to = t;
+    convFromEl.value = conv.from; convToEl.value = conv.to;
+    convRun();
+  });
+
   /* ================= 按键分发 ================= */
   document.querySelectorAll('.keys').forEach(function (panel) {
     panel.addEventListener('click', function (e) {
@@ -695,6 +823,7 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   var KEY = { '+':'+', '-':'−', '*':'×', '/':'÷', '^':'^', '(':'(', ')':')', '!':'!', '%':'%', 'q':'π', 'w':'e' };
   document.addEventListener('keydown', function (e) {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (state.mode === 'conv') return; // 换算模式：输入框原生处理，停止全局拦截
     if (state.mode === 'prog') {
       var d = e.key.toUpperCase();
       if (/^[0-9A-F]$/.test(d) && BASE_DIGITS[P.base].test(d)) { pDigit(d); e.preventDefault(); }
@@ -727,7 +856,13 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
     getExpr: function () { return expr; }, setExpr: function (s) { expr = s; },
     doEquals: doEquals,
     getLastResult: function () { return lastResult; },
-    setRad: function (r) { state.rad = r; }
+    setRad: function (r) { state.rad = r; },
+    convSet: function (cat, from, to, input) {
+      conv.cat = cat; conv.from = from; conv.to = to; conv.input = input;
+      convInputEl.value = input;
+      convRun();
+    },
+    convResult: function () { return conv.lastRes; }
   };
 })();
 </script>
