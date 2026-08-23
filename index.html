@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#38b26e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="滑稽计算器">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-64.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
 <title>滑稽计算器 · Huaji Calculator</title>
 <style>
   :root {
@@ -244,8 +251,26 @@
     <div id="history-list"></div>
   </div>
 
-  <footer>小时候的练习存档 · <b>现在是真·计算器了</b> /滑稽 · <span id="ver">v2.0</span></footer>
+  <footer>小时候的练习存档 · <b>现在是真·计算器了</b> /滑稽 · <span id="ver">v2.1 PWA</span></footer>
 </div>
+
+<script>
+/* PWA：注册 Service Worker（https/localhost 才有效；file:// 打开时静默跳过仍可正常使用） */
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').then(function (reg) {
+      reg.addEventListener('updatefound', function () {
+        var nw = reg.installing;
+        if (nw) nw.addEventListener('statechange', function () {
+          if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+            console.log('[PWA] 新版本已就绪，刷新即生效');
+          }
+        });
+      });
+    }).catch(function (err) { console.warn('[PWA] SW 注册失败', err); });
+  });
+}
+</script>
 
 <script>
 (function () {
