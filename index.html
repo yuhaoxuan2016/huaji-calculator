@@ -14,132 +14,133 @@
     --line: #e3e8ee;
     --muted: #8a93a6;
     --danger: #e35d5d;
+    --btn: #f1f4f8;
+    --btn2: #e5ebf2;
+    --bg1: #eef7f1; --bg2: #e2f0e8; --bg3: #d7e9df;
+    --hi: #f0f7f3;
+  }
+  [data-theme="dark"] {
+    --ink: #e8ecf3;
+    --card: #232733;
+    --line: #363c4c;
+    --muted: #8d95a8;
+    --btn: #2d3242;
+    --btn2: #383e50;
+    --bg1: #14161e; --bg2: #181b25; --bg3: #1d212d;
+    --hi: #2c3244;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
-    background: linear-gradient(160deg, #eef7f1 0%, #e2f0e8 55%, #d7e9df 100%);
+    background: linear-gradient(160deg, var(--bg1) 0%, var(--bg2) 55%, var(--bg3) 100%);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 24px 12px;
     color: var(--ink);
+    transition: background 0.3s;
   }
   .app {
     width: 100%;
-    max-width: 380px;
+    max-width: 400px;
     background: var(--card);
     border-radius: 22px;
     box-shadow: 0 18px 50px rgba(31, 122, 78, 0.18);
     overflow: hidden;
+    transition: background 0.3s;
   }
   header {
     background: linear-gradient(135deg, var(--green) 0%, var(--green-deep) 100%);
     color: #fff;
-    padding: 16px 18px 14px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    padding: 14px 16px 12px;
   }
-  header img { width: 42px; height: 42px; border-radius: 50%; background: #fff; padding: 2px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-  header h1 { font-size: 20px; letter-spacing: 1px; }
-  header .sub { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+  .head-top { display: flex; align-items: center; gap: 11px; }
+  header img { width: 40px; height: 40px; border-radius: 50%; background: #fff; padding: 2px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  header h1 { font-size: 19px; letter-spacing: 1px; flex: 1; }
+  header .sub { font-size: 11px; opacity: 0.85; margin-top: 1px; }
+  .theme-btn {
+    background: rgba(255,255,255,0.18); border: none; color: #fff; font-size: 17px;
+    width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+  }
+  .theme-btn:hover { background: rgba(255,255,255,0.3); }
+  .modes { display: flex; gap: 6px; margin-top: 10px; }
+  .mode-tab {
+    flex: 1; background: rgba(255,255,255,0.14); color: #fff; border: none;
+    border-radius: 9px; padding: 6px 0; font-size: 13px; font-weight: 600; cursor: pointer;
+    font-family: inherit;
+  }
+  .mode-tab.active { background: #fff; color: var(--green-deep); }
   .display {
     background: var(--ink);
     color: #fff;
-    padding: 18px 20px 14px;
+    padding: 14px 18px 12px;
     text-align: right;
-    min-height: 110px;
+    min-height: 118px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
   }
-  .expr { color: #9fb2a8; font-size: 14px; min-height: 20px; word-break: break-all; }
-  .value {
-    font-size: 40px;
-    font-weight: 600;
-    margin-top: 6px;
-    overflow-x: auto;
-    white-space: nowrap;
-    scrollbar-width: none;
-  }
+  .expr { color: #9fb2a8; font-size: 14px; min-height: 20px; word-break: break-all; font-family: Consolas, "Courier New", monospace; }
+  .value { font-size: 40px; font-weight: 600; margin-top: 6px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; font-family: Consolas, "Courier New", monospace; }
   .value::-webkit-scrollbar { display: none; }
   .value.small { font-size: 26px; }
-  .huaji-line {
-    color: #ffd76a;
-    font-size: 13px;
-    min-height: 18px;
-    margin-top: 6px;
-    font-weight: 600;
+  .huaji-line { color: #ffd76a; font-size: 13px; min-height: 18px; margin-top: 5px; font-weight: 600; }
+  .prog-rows { display: none; flex-direction: column; gap: 5px; margin-top: 6px; font-family: Consolas, monospace; }
+  .prog-rows .prow { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; border-radius: 6px; padding: 3px 8px; }
+  .prog-rows .prow span:first-child { color: #8fa79d; }
+  .prog-rows .prow.active { background: rgba(56,178,110,0.22); }
+  .prog-rows .prow span:last-child { word-break: break-all; }
+  .mem-bar { display: flex; gap: 6px; padding: 10px 16px 0; align-items: center; }
+  .mem-bar button {
+    flex: 1; border: none; border-radius: 9px; padding: 7px 0; font-size: 13px;
+    font-weight: 700; font-family: inherit; cursor: pointer; background: var(--btn2); color: var(--muted);
   }
-  .keys {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    padding: 14px 16px 16px;
-  }
+  .mem-bar button:not(:disabled):hover { filter: brightness(0.96); }
+  .mem-tag { color: var(--green-dark); font-weight: 700; font-size: 13px; min-width: 40px; text-align: center; }
+  .keys { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px 16px 14px; }
+  .panel-sci .keys.func { padding-bottom: 0; }
   button {
-    border: none;
-    border-radius: 14px;
-    font-size: 20px;
-    font-weight: 600;
-    font-family: inherit;
-    padding: 15px 0;
-    cursor: pointer;
-    background: #f1f4f8;
-    color: var(--ink);
-    transition: transform 0.05s, filter 0.15s;
-    user-select: none;
-    touch-action: manipulation;
+    border: none; border-radius: 14px; font-size: 20px; font-weight: 600; font-family: inherit;
+    padding: 14px 0; cursor: pointer; background: var(--btn); color: var(--ink);
+    transition: transform 0.05s, filter 0.15s; user-select: none; touch-action: manipulation;
   }
   button:hover { filter: brightness(0.96); }
   button:active { transform: scale(0.96); }
-  button.fn { background: #e5ebf2; color: #4a5568; font-size: 17px; }
+  button.fn { background: var(--btn2); color: var(--muted); font-size: 15px; }
   button.op { background: var(--green); color: #fff; font-size: 22px; }
   button.op:hover { filter: brightness(1.05); }
   button.eq { background: var(--green-deep); color: #fff; }
-  button.danger { background: #fdecec; color: var(--danger); }
-  .history {
-    border-top: 1px solid var(--line);
-    padding: 10px 16px 14px;
-    max-height: 180px;
-    overflow-y: auto;
-  }
+  button.danger { background: var(--btn2); color: var(--danger); font-size: 17px; }
+  button.wide { grid-column: 1 / -1; }
+  button:disabled { opacity: 0.32; cursor: not-allowed; }
+  .history { border-top: 1px solid var(--line); padding: 10px 16px 12px; max-height: 170px; overflow-y: auto; }
   .history h2 { font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 6px; }
-  .history .row {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 5px 8px;
-    border-radius: 8px;
-    font-size: 13px;
-    cursor: pointer;
-  }
-  .history .row:hover { background: #f0f7f3; }
+  .history .row { display: flex; justify-content: space-between; gap: 12px; padding: 5px 8px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .history .row:hover { background: var(--hi); }
   .history .row span:first-child { color: var(--muted); }
   .history .row span:last-child { font-weight: 600; color: var(--green-dark); }
-  .history .empty { font-size: 12px; color: #b6becb; padding: 4px 8px; }
-  footer {
-    text-align: center;
-    padding: 12px;
-    font-size: 12px;
-    color: var(--muted);
-  }
+  .history .empty { font-size: 12px; color: var(--muted); padding: 4px 8px; }
+  footer { text-align: center; padding: 11px; font-size: 12px; color: var(--muted); }
   footer b { color: var(--green-dark); }
-  @media (max-width: 400px) {
-    .value { font-size: 34px; }
-    button { padding: 13px 0; }
-  }
+  @media (max-width: 400px) { .value { font-size: 34px; } button { padding: 12px 0; } }
 </style>
 </head>
 <body>
-<div class="app">
+<div class="app" id="app">
   <header>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAB9mSURBVHhe7X0JVFR3lvd88/XMZDqd6enOdNJJdxKNEWUXl0STmERNNMvXfknHJCaddNtGdqgqUHBBjftG1ETRuOCKirLVRhVQRa0UUOxrIQIKyL5vshVw75z7KBAeoKBoNPo7557kSL3t3vf/3/2+f/mXx3iMx3iMx7gdEPHfAOBJRPw1UV5e3n9U37jxHAC4I6JDZnHx7woLC5/o+7vpt/+XfZ7HGAUQ8V8R8b8B4Bt5Q+byNdnnHY4XRcftKgi7zM3wNyxPPmj4NG5X1qcxO4uc0o+gfcoh/ES3M39J/J7sb1P8DLyMk4Z9haLcY4Uy+TrDheVxN/K+BYDPAeA/EfH/sK/3GCYAwBvimtSVweXxCR6ZpwxOaUfxk8TduED3HU6L4KBVuAvaSt1wmtQdp0s5OE3ihlND7dE8zB7t+v5N6s78xjLcGadH8fC92E24JMkXnVOOoLfhbEZoeXxsRF2mEwBMZ1//kQQAzAmp0HvvK5LE2Cf5tX+k34YzonhoI+1lrlWoI9rynXG60A1nCN2Z/46GZojc0U7ohjZ8Z7QMdWSEZBvhhjNlHvhx0m50TD7U6FccqRLVpLo8ksLIx4Z3TpVohLxUf1io+w5nyDzQgu+I1mGOJmYPZerdEgnQTujKCNVC6IgzZZ74Ufw2XJ15puN8RWxAObTOYt/nLw6XoWbe9oJQwWdxe2CO0hunhtmjDd9pCLPuF5HApwoccK5mHX6l39vpWygOqAHjL08QFdA+fwcxPnY3zFKuYt52O4HrEIb8XDSN78Lc02y1N34Vv7fz+0JxgBHgVfZzPHQAgFmSujTBPxN+xFeVq9As9Fu0FjqjjcgFLfmOaCt0GcKMn5PopSBBzNGsRqfkw52a5itnAcCM/VwPPMgGv2as81qXfa763fhNvVuNwBkXRKzFxTFbShepN15fLN+Mc8I90VpAQhi9gr3XRPqHBDElbAX+JXkXbssLyW+ATnv2Mz6wAICnTpVrTjrmHkdzoRNjiVgJnPAzxXZjeu218FZju6Slqy2lsqnO/3xqpOpt8cpumwdsJRCR0rYKc0RriSty807jxeq4nQDwH+znfaCAiO+eKNPkva7wRvMwh/6HsQ53weWa/dkAIAeAGkREACgGgLO7UgNzySoh05HNhAeByHIy5zvgPJUPBlcnpAOALfu5HwhkQ8X8TfnBjbOiV6I1y7KxlbjhV5o9iQCQQszvAwDkRebpU+zCnHG6eOjDP0hEOutNzVr0LRIWl0C9Dfv5fzYg4r+ntF//51K9bwM5UNMELkPseHO+PTrqDtZBD/gDAAwQQEN+XWnQgsg1Rit+rw8wWup1zO7fqqHrkVNoJ+PhsqQfi0q6Gj5l8+K+g4JkOe3ll5wu+zPOzUimJW1HS2RbumvqaoIBoHuAALrbe4xnvpBu6SZFzT6OTYwjJXRGuygus6pswt3QLoqHVmIXtKJVJxp6zHgTmayW4S7olX8eS7qaDrB5ct9Ayjb3RkXwN6kHcHLI8luGCog588VenRlleZdYAugCgG1escdrp/Jv6owhJHI3ma+uuFiysWEJf73spyyh/EKBUr5csjPyc8nWnIVR69DS5EnfD3ol9Ft0N5zE6s7mA/Qisvlzz6GrvbyMk3vqtswnYgQgXNWZXnJlkABMQoj1TQpKtyVzdIAitqO3WeSOtiI3nCy0x1lSHu5KDSy/0XrjInRDNADEmEgFACFppVcE9tof2s349oPOcy/JLGwFrrlyHlMbi99l8+eeIqWlaMFXKftrzIUOo7JeLPlO+EH42s6C8qLhBNAQkqPMp/NME7viNJEbThO7o63YHc3ETmgTwcGvlXvqZUWJMgC4CAD5A483ncNIFlVWdaHwrcjVaCF0Zs5BQmQEOcw9jReZi53QIeOnqyWd9ffHOgKAhd/lBTVaS3sdFvYNDUeWAidcKFrdmVNxLQgAeljMq0uqyuO/HundZSF0QRsxB23COWgpdcPPFdvbzhqiwrEHTwPAlYHHsdEnBOdYv9wpUhe0DeegrZhjEiYJdeh9jQeRTpgh4+H+QkkxIs5g82tcQUkN/xLl1dcUqxhrh30zI5E13xnnSlYZY8uyAgCgnc28vKqiS/Mkq29MEbugjZSDkyNccZ56Y21R+XVyfhTsVTMSerp75MtUe+tfljqhlZSD1tJeYfYKg1aYO7PCxntVkLM5L3YjXiyPi2PzbNxAqb5L1XEnZ8u9mAuyb+JWNE3oirPCOcjPj0kFgOtsxrW2tJz5UuPbOFHihFMj3XGy3B39DGJivHA4gQ0HALhR1lQTNC96Q/dEqTNaRHIYsqRkDglDYhKGaXsbz+2J8Zr5TjhPva5H2WTYcU+U8pWOKi+X3BNMXId9A7cjEsDMcC6Kr+ovkwc8DPMkf4v9Ic5MwcM/RjrgN7p99T1dXWfZv7sVACCBX6CTmUXz8JVoHk6R8XBqFJehfkFEDFgVzIoYPyEQTeXb45qCC1jR3biUzb+7AuVovXPOXqW4yO0snuHIWuCMr0es6tJV554HgOZhmFfkqPXTPqdyx08S9nYVNleRsk5i/+5WgB7I9M4ISKVzTFJ44KRoHk6W89BMTsLgojlLEDaS3pXAbEvjqR9kXNyaF6Qft/wzIv7qYmXswbnKNciYiuwL3obo4SxEzviO2KszszyPrJh+T7ifeQCXlyh3pSzW76kvbKk6RqbpcL8bCcxvu/D0LPnavOdiPPEllSdOUHrgy0SK3hXRKwjeIEH0rgYSBCnr8VkNNgIXfE+9AeSN2WvZvLwjNED7Am6WPxOQYl/sdkQPRG/ZZKETLone3llbWzPEDDUxsEhRmn6kqqVeejtrZziQANJKrvhbxfjgH5QcfEHtiS+qeuklpQdOVPJw0iBBcNGcdET/arippMdDCJYiZ/TJuXADACzY/BwT6O3fXygRzFF5j9rk7KM+5tN+O0nshF+q93Q2NzcPKwACAOQOtz3dDqR8SYfsuSzQPq3l4HMaT3xe44l/0njin9We/cKYoBoqCPOom4qalDSthD4FzX6esRDFjObHbsCTJcrDbJ6OCWntJfOW6Pd0kx0/lr2fTD3G2gjnoHUEB1+WOuP78g1dpZVl5AcMK4A7BUVU85tKd7+VuKP19xouI4CBRMJgBMGsiJU4QeXJbE2Torm9QpDx0HLAltRnst6NEMiptBQ647KUg/XlHc3mbL6OClQgtb0gTDhLsRKnC4ZeZCTqe/NtJVw0l7rhJKkLvqBwxY+0W5sqa6ooGjrIEbsbAEApAOx1zTrV8qTWHZ/ReOKzJmKYr12Jz2o88Gk1B5/WcPFZnSc+o/XAZ9VcfFHDwxdUHHxJycVJ0Rwk03VKhBvzwpAQ7nY7Ij9prmYtHr4e9RObt6NCDba8syz5QJfFGAJcfWEE63B3nCRxwumylbhQual1qWq3Lqn8MingPDYT7wYAELXTwI9/RrcSn9bw8FnNSnxGS//vgU+pOfiU2h2f03qipc4HZsdsrlmk3Jq1POGnnK2X+RlrUs4G+WQG6r7W7s1+V7Hx6vuqzWATycPJUhd8JdwJLcWuaCce/aofjiwFjuiWcaxhzLqAcrpny7TCN1RrcNpo934T8ycLHdEywh2/1vg2hOVpVY3tLeHQBVoA6GAz8E4BAK1kpp6+poh7QbsKf6vmMIz/rY6H/6l0wRdivPDNmG3dDmkncg5flsSkVxcktLS3SbpbO2RgZDxronwA0EJHt6y9rU1c09IQG5YbE7sxOSD1r8pt9XOivHCy2AmtSBDsZx0lkS6g6jxJbfqhMZmlRoDXvLPPGM0Fo7R8RG5oJXJlFNpfZJtaz+UqEqAbKPZPkcrx3vMrAOC4X44k9oVYL/xXlRM+k+CF/6VwM1pEexd5pQdclZYkaerbmsIA4CRl4ShOxD4PG6bQeC0AXDB2dJzTlmREcbWHM2cLuY02ke6MFUgOJTvZdCsivWkhcsJtl0MaAWAim88jQllj8F4Uu3lUdj/tk2YCe5wezsNl6u/jm9pvnAOAOADoZD/keKCptTnVJyPQMCnas9FG61P7j7SjJRy9f+Sl/JiTtbU1kbQtkSlLq4R97GhBZi0AVAJARH5l0entCeeivoja2jwnYiVODV3BCILNh5GICg4+jt2Bhpbyr9l8HhF7r4rjqFzwdik/WprmQkf8RrnbGF2cogMjUMi4hf1A44maprrMwALticzaosj6xvocAMgCgKuI2Mj+7XjAFGVNaW1pPRucqwrjqg+20LOTdz+a1UDmO+WS/UtUF9l8HhZUpeyccbRpNI7XFLEjcrWHKptamy+Q98q++XsBAGgbLidwr2HSO3GIeHp/aljWDDGHKbcZjRDMBY7onXWGVtSti7xIUcQ2XFn516TdaDmgrGQ4mipywiWq7fXtxg6K74wpbvMwg1YbJYZOGCKyXpNQYdnthWARao9fJ+3Hgs7qWwfpyPMNLo9Podp69kkGkrXQBWdHrUJ5USqFizPYN8mGyfZXdxrbRdADAkRMJoXH/t3DApOOkPtl8lOmhZPNf2udQH9/S7MOo2uzwtk8HwLn9CPx02UjC8BO7MaYZ5z4I6XQAwdu51gBwLX2trawrQWCxLeTd5UuzTxyfVX2heTomuxL3d3dpDRvefyDCsZq6gGhs/LHzKmC2/tKc9TeyMs8EcLm9yAYAWb/I/nHKlvxCBIV9UY234jybtMXZ9HWk8m+sT70AHSTnZ3UUCB+Q7+94Hdxnvik2g1/o3bHp2I4aJe2DRMbCiIAoIl97MMCsvQa21t3fave30q5gCH8GkBURuOSeoS2rylsvvcjqfWa41fpPzA1kewTEFHIdorUFTclB1BmK4B9QwNBma/E5sLTdklb23+j4+D/aDz6PdUnVW44P/n75obOFvF4Omg/BwBAZqgoCFoU6dNBNUsj6QOqjXLIPILl0PQhm+/98Llywf7duE1MART7BMT8SSIHfF+2oaWhvYXKtsvZN9MH2iCNPV2Bf8s+VvhrLYeJ0fTRH+i/catwW4GITFY++9iHFEHnsqNCyCwfqeSefIf3dVsoef8Bm+8MEPGJi2UxcTOjPJBMrIEH00mtI9xwsWxLS2J5Dm09hew7GAjyfquNzQHTE7d2P6F0Yd7+32t4+Ds1D3+lcELrpM2Y11Kmedjf/j6Y9MFFB82PueaiETp+RO44V70WZTUZYWzeM6Ck++780Cs2rLQjMX+2mIf7U0OSWzpaT1EEkn0Dw4GW5pYCUcLEZB98KW41Ttb7oJV+I85N3lm3IT9YDj0gZh/zMINyQtk1xT9+GL2xt0ySLQChG86K9sTDRREaNu8ZkAA4GccN1OY58CAqLV8sXn8djBA4WuYTSLl29nQH8yuTos4UqxTSylRFcl2BoLn9hggA9FSQxT7mYYYpMST9PuWSgaKgw9WpzpR74JqsMwo27xmQAJYlHzAwfbimAyixQF7cjuTADKo6YF/0djAFuArIFDU5MEXs3/ySAABlpTWVBz+K2tjMCGGIADzRMe3I8AIoQ/z1lwn7DEzT84B9izziU1mRJABywx/jFiCfhkLdu1MCI6dJhsbRZsk98R9JB4cXgCg5+dcf63YYqON80ArgO+LhdGEmFcKyL/gYQ0GrvrqhLuC98LW11qLBvRIkgCVxu0cWwCexOwcJgMhG4oaLJGuL2lrbSAFTW9FD6bneT5ABsiru6DUqYR9YvHxHAqATmPFXgIvOL6+rq+s4xcnZF3yMwaAqjd0JgVk0ImFgqfwdCYCIAk4WEhd0jvWrLG+sIium/Jdiw98LkB7wS+WHz5RyBwXqSACfjyQAsoK+SmQpYRNR1stG7I5TIlxxUfR31TtjAi5eryk7TRHOx4IYCgDQHc4QyWZIOYPqqUgA/xxJCZMAvk0+OMgM7SdTwp2KrMwi3fGVCBd8X7cd5WWZVOeTy76BRx0AEHkiMyKV2qoGJvTJDHVOOzqyAHgZ/gbyhIcIwBQLmhbOZSoeJkgd8enI5bgp45IOAHLYN/Cog3ym1brj1yezlPAMuQeuNQQMLwAa8/XDVVE+E4oYcBAFkWzCXdE2iqrHqN3IuW2h6rv6L2J8G9TlmeQdX2PfwKOOpsZGzTz+yqsURRj4Er8avRJPXlfEsHnPgNrwL5Ro5K/KPPuDccT818UeuDxi9zW3yL1JB9PC5FKD7nxzczM1yVEhbTr74o86yA8wVBYETQ2xr7ALH+zUvqVeh1G1mWfZvO/H+uzAZQvjt/RrboswB/w0YjO0trYGQA9QYS01WIyqY+VRBfW8HU/ki2dF8AZZQLZCV/wwdit+XyRawOZ7Pwzt5U7fpB/o77eluqDZ4R7Az9WQsk1lX+wxhoKcsDWxx5OpcX3g9kMJGeesY1gHNz5i870fAGD9TdIPJX1xDApFvy7k9YiztILRJN8fA7GtpSXqy6htFeyqQrsIDjom/5SNiC+y+T4IHlkn9dRm0yeAOSIeUKsoANCwjVF3rTyKoLLJhOKsg+9IVnewR/BQUn7N5YBQNr8HgcpSBBWJcbNknoz9SokZa4kLLgxdVQRtcAIAqtgXHYhHXUAAEH8wQxA7XcIZlNalUvV3ND6orb98awEQEhoLnL9I2YuWob1LiMpQ7EKcu31i/dME6UqJyqBXy3PiNdE58RoZQ3GamPxUTWN7C6UYlQBAq4XqMx8pZU3WT1dnV5K9Ym/DlNAVg95+GsG5POUgFnfULGbzewio29sl82i1hfBmWo2EYCV2xumhTjArzNU4nU/kZrQTuBptBG7GaeE847woH+MS+Y4uB92hogtFWklne2fIo6Q3AKCkvKEm8P9FbGxnJ2Msxc6UCaOk1OgqpA8VRWjIbR4YyWNmOZBTJnBhKn5JP9DwPaqftxC74isSZ3xR4oh/lrmiudYLP9btrTh1RXYeeoAqKJrHu0z9QQO9bMqi1LC3pF44TXRz+6FY0FztOjxfqRvZ/mdDU5Pjuli/nRm0N1CSw1FvP1hv3y31WVlEcXGSnIt/UrqjWYw3rkg6WljX0khCoN7ZXywo/HA0S6yhuRQD+UNV1J/rfTG/tfJjNp9HBI3z9ck538q2ZUciihNRoI5GAlDrJ3WnT47m4UsKLv6Pyg3f0m6pyqi7RvPiQtg3/ksAGScAcM5Le7SFxvf08YWMGJpj7ZsnoBzKrc1PNi5WxQW8rV0/6iaN3lXQ221IPbjUFE3toNQo/Qe1O76m+w7PXlVpoAdC+wb3/RJg6odQGyoKj74nWdsxcPQaDSn5UL8No5sMO9j8vS1awThzRcqhNhpkymb4cESrgIRA/bbMVjRQCEoPfFbJwQmaVfhh3C5JY0cLdUsOmRlxpzAlw8uoVpUaAQGgmoR8L+tOTY0b1NsckVqeF/6xbEuTBd9hUE2VlcgZPTJOUF/AS2z+jgq+haKAOarVaDeKNlVaBUzOgLokTVsRNUL3CYEapP+k5OHzei98Vb2+Lrwo8QzTJHeXOWamQLgHT+c1lV88bJDkH8yRZChrsi8ZGotD61ob/aFnfMPlJmHHdLR1nIwpzY7aqb9Q8Y7Yi5mZN+iF5LvgOzHr8US5ahebr6PGVWPNrK8S97dZCkfXqN3fIzxAH5jLehuiSSfQdvSiivp2uWgdux5XpZ7SGI1G8hvGbCHR2w09EKyoyJD9PeVonW38JvyNwhWf0nHxDzEeaBazBrnJJ5o6jUb+eBWBkaNVXld1zjclKHJp9Pa618M9mJFtve1Kgy1Gq3BntE/9qaIe2u7s7SdQx8yx0uiz1HA82gFNffpgkBAGrAQaFzBR5YHPqLj4vM4TdyVfokDfiIW+bJi2GmlWdUHQinT/jBfVq/BXamd8QueOf9StxJflvIov045c3ZoRlBpfn3+hu7ub4i93BQq7QzdIfRMCZQul6+pnSDhoIeidfT3cyDaaCL8ofhNeqtTvZPN0zACA17yyzgA7uHQr6tMHjGVEAugTgvzmdvRnBQcn6L1xa/IFCvTdtuSRYQLABVVJxsUvUw9p/hjl3vBErDv+LsYDbeM2dL6v2518KU+rLK2pIIFS6JzaVO9K2Zusm/CM8vzApbId5VTjT/s6hRlG3BEEbszXPrblhdQh4gQ2P8cMWgWh1QkbFmg2jMov6KOBwzpICMxKiOTgVBkPX5ZxcJLWE1enB2T3dPVQVm3Yllb6d2J8e0f72fPXtMq/Jx2pN9OuwSd17vj7eE98P26P0S9XmpBbd/0M9ED0eHRKmtqPcto72i9mVOSHHc0QZb0nXo1T6FMpt+kTptVA29GHuq3dmubcFWxe3jFoVtzmK0FZ0yKHlqzcivrNU0Yx9zpqNI9hqtoT16adSYauHir2GrGfl6oLzl2LCZmv2940QeeNv1W54n9p3HGqbk33TgM/rqWjjWYLUZfNXe/xpjpWvbHDeOynNKHms6gt9fPEq4DCMDS2eLithk0koFcVK3F/oVjO5uFdo9LY7OCZf3bMI8uYZL5pS7KSuKN5NBe5+p8SoaOHWltH3Hqo3DutvjjYNnZD+29Vbvi8uncEzfMKTsfhbBFtL5QWveMthsppTPVNJZREaWhtPu+XHCr9JHJzE9VB0ZZLbahjGdgxVeiAmwuC8QZ0jNwFc6eg6SmCmqQd7yjXAtW/j+aN6CfTdmQmckJ7zb7LXa0d9OaPmMyn6jtjR8eJrxP9Cp5XcZhZPzR46RmFO76u29JWU1a2j95Y9nG3gsl8LIQeiG280RJb2lgjiS/LlgfkyBR7koMNf43c0kK9cVQNPtbZEMx4Gr4jfhCzpTOuNd+dzbtxAw3xCK7QZ86N8en/utFoiOJFNP2WG3+kvb2zczclLtgMIpj23+LqloYjS9R70idGc5jZb6S0iV5QccmHoErtMbU2mXSJJqvy6ilP/bH8j6Trq96N9Gl5O8IbZ4jd0ULgxOS/h6vpHw1Zhznhh4k7MKI6I4rNs3EHxYl8C4XFNDSbnA32zfQRKStS2jRYe7rAtctJuT+hrq3lEACMaBZSL0HkVf3pxZrtxkkKLpqZzFeynogmqrj4j6g9CQAgMv2+3pR7GNbjJf+CyWV34ekzl+VRC2UbjNRiS03mNESDorrD9cONhWiE52yVNx4tiU5DxJfZ/LonuNpZabM81e+qBeUIhrkpIoohLRSvRm/d0aJAg5wsHdq3b6Vwc9XX0y6+KvVonSh16g1nmEIafTRB6oyfafc01zfW7yFT83pjhVByTS+C7h6N6Rz0ppNSpqBfUHd3d3BgriphmXZfiY3IDaeKnXpnAN3hmz4cWUldkZN9IrkN2l5g8+megsKr669ewldCaXj30BsjZe2hPdwMRmZkDOWTb8X8Kw3NjT/8Vb299hWxEzNti6YZUkijj/qcuimR7viFYkflnrTglA/lG1vmy9c319TXBNKgkNLaCunBNIF2nd4/83y+Op2jOdRCK9BM5MCMLx5PxlN4hqbE7CgIwwpj4/3/4hIVcpV3Nh+gEe6Tw1YMEQIJwEt7pJOWP3mubKYTTIqxlWqOuFq/RFpRfYO7e+nmpFvyrMmnIDKXuKGF1B2nhrugTQQXl0RtqV0R7Zu6QLq63VZKf3dBa0ahOqEtJUfGYjCMkibz7dHnSiB2YPcaMlDY/LlvoI8YrMw5iwzzBugEKkp6U7QS/ynb034pR0EjCYY4XKbGtmMnL8vSZ0V63Ax9m8YK9wX4BlLveMmbYyZpvL1FuAtaRLoy4yIpG8XkscfxbR9ItmHOSIPLN10JwsbujnVsfvwsyGuvWvhtql/xDDmPUUp9broVBfFCXPB79bnC/OrrO/PKrgXmFucHZxXmBmcW5gQlFWQF+MT6Z8yReDDfnWGvorHR+L/lA4mZDx3mxChct8xjqa0As9l8+FnRAp02PxRJrlMItq+ybprQBecKPPAr2Xb4i2xT53vha1rnC71uzBV43niT73HjTQGvjckts6KJDyLR8MIP9NvwaGk0xaTur8IdLegTT0GVet18lQ8ynyQR0FbgykwPpI840PxRKzJNTURxE/aDPmhEUWCK9X+g2YSy+iyysB5M5g+EqCFlB33kxkriwgz+GJPX/IAQM3CPaqOiuLg+/yLKmzI57Od8oNEInUt98wV5n6T6Ml8sZT5v9RAIghhvy3dh4jp/yz6Ih4tl1NU//rGd+wEAmKRrzvPjpPs3ztWtY5IYzCc/HsD9ngwACq9YipyYr2GszjpTldZ+fQcAPMN+rocOAGB5qETmtyz5QBMVKTHZpDHEku41UQaLYbxuA32jvupYqXLnuCRTHjR0AFgcKusVxIKYjczISzI/xzqZfTyIrkkRTPIdFsVuwRUph6r9K9X0xt95DvdhQQeAubg67dB32YGNi2O34RuaNYzXSubraHPPd0LkHFLUk5hOK/HT+F2480popayB+e7L2AqnfglgdET95b+dqFQHrko7WfWZfg/TR0XdhGahK9A81IFx7O5khdAxVBhlHmrPpBNnRnvi2xof/DJxH3qnny46WxUboKvP//+PJOOHAwBMjm8sWKqoz+avzz6v8k47g18l7sNF2k04R+GF5GXPjPZgmp1p8BGZh2Yh3yKVgs+U8Zh/p4Ji+g399g2lN34Qsxn/nvwjeqed7tqceylKXZcVnNh0bfFjpt8GFNwCgPk5ULVw25XQj0Ir9KGHiyLVawwBCmp0/kLvK/86bm/SttwQ/C7rAi6N9dV9qd8X7ZJ2VLHOcE5xojRaE1oWf3ZHXtjC69D4PiK+yb7GY9wlqLEcET8mG50ydey/P8Zj3Bb/C11yW15+XnNUAAAAAElFTkSuQmCC" alt="rabbit">
-    <div>
-      <h1>滑稽计算器</h1>
-      <div class="sub">Huaji Calculator · made by rabbit</div>
+    <div class="head-top">
+      <img src="data:image/png;base64,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" alt="rabbit">
+      <div>
+        <h1>滑稽计算器</h1>
+        <div class="sub">Huaji Calculator · made by rabbit</div>
+      </div>
+      <button class="theme-btn" id="theme-btn" title="切换浅色/深色">🌙</button>
+    </div>
+    <div class="modes">
+      <button class="mode-tab active" data-mode="std">标准</button>
+      <button class="mode-tab" data-mode="sci">科学</button>
+      <button class="mode-tab" data-mode="prog">程序员</button>
     </div>
   </header>
 
@@ -147,33 +148,95 @@
     <div class="expr" id="expr">&nbsp;</div>
     <div class="value" id="value">0</div>
     <div class="huaji-line" id="huaji"></div>
+    <div class="prog-rows" id="prog-rows">
+      <div class="prow" data-pb="DEC"><span>DEC</span><span id="prg-dec">0</span></div>
+      <div class="prow" data-pb="HEX"><span>HEX</span><span id="prg-hex">0</span></div>
+      <div class="prow" data-pb="OCT"><span>OCT</span><span id="prg-oct">0</span></div>
+      <div class="prow" data-pb="BIN"><span>BIN</span><span id="prg-bin">0</span></div>
+    </div>
   </div>
 
-  <div class="keys" id="keys">
-    <button class="fn" data-k="C">C</button>
-    <button class="fn" data-k="back">⌫</button>
-    <button class="fn" data-k="percent">%</button>
-    <button class="op" data-k="÷">÷</button>
+  <div class="mem-bar" id="mem-bar">
+    <button data-m="MC" disabled>MC</button>
+    <button data-m="MR" disabled>MR</button>
+    <button data-m="M+">M+</button>
+    <button data-m="M−">M−</button>
+    <span class="mem-tag" id="mem-tag"></span>
+  </div>
 
-    <button data-k="7">7</button>
-    <button data-k="8">8</button>
-    <button data-k="9">9</button>
-    <button class="op" data-k="×">×</button>
+  <div class="panel-std">
+    <div class="keys">
+      <button class="danger" data-k="C">C</button>
+      <button class="fn" data-k="(">(</button>
+      <button class="fn" data-k=")">)</button>
+      <button class="fn" data-k="back">⌫</button>
+      <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+      <button class="op" data-k="÷">÷</button>
+      <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+      <button class="op" data-k="−">−</button>
+      <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+      <button class="op" data-k="+">+</button>
+      <button data-k="0">0</button><button data-k=".">.</button><button class="fn" data-k="%">%</button>
+      <button class="op eq" data-k="=">=</button>
+    </div>
+  </div>
 
-    <button data-k="4">4</button>
-    <button data-k="5">5</button>
-    <button data-k="6">6</button>
-    <button class="op" data-k="−">−</button>
+  <div class="panel-sci" style="display:none;">
+    <div class="keys func">
+      <button class="fn" data-k="sin(">sin</button>
+      <button class="fn" data-k="cos(">cos</button>
+      <button class="fn" data-k="tan(">tan</button>
+      <button class="fn" data-k="ln">ln</button>
+      <button class="fn" data-k="log">log</button>
+      <button class="fn" data-k="√(">√</button>
+      <button class="fn" data-k="^">x^y</button>
+      <button class="fn" data-k="!">n!</button>
+      <button class="fn" data-k="π">π</button>
+      <button class="fn" data-k="e">e</button>
+      <button class="fn" data-k="1/x">1/x</button>
+      <button class="fn" data-k="sqrt2">x²</button>
+      <button class="fn" data-k="(">(</button>
+      <button class="fn" data-k=")">)</button>
+      <button class="fn" data-k="%">%</button>
+      <button class="fn" id="deg-btn">DEG</button>
+    </div>
+    <div class="keys">
+      <button class="danger" data-k="C">C</button>
+      <button class="fn" data-k="back">⌫</button>
+      <button class="fn" data-k="pi2">2π</button>
+      <button class="op" data-k="÷">÷</button>
+      <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+      <button class="op" data-k="×">×</button>
+      <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+      <button class="op" data-k="−">−</button>
+      <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+      <button class="op" data-k="+">+</button>
+      <button data-k="0">0</button><button data-k=".">.</button><button class="fn" data-k="%">%</button>
+      <button class="op eq" data-k="=">=</button>
+    </div>
+  </div>
 
-    <button data-k="1">1</button>
-    <button data-k="2">2</button>
-    <button data-k="3">3</button>
-    <button class="op" data-k="+">+</button>
-
-    <button class="fn" data-k="neg">±</button>
-    <button data-k="0">0</button>
-    <button data-k=".">.</button>
-    <button class="op eq" data-k="=">=</button>
+  <div class="panel-prog" style="display:none;">
+    <div class="keys">
+      <button class="fn" data-k="D">DEC</button>
+      <button class="fn" data-k="H">HEX</button>
+      <button class="fn" data-k="O">OCT</button>
+      <button class="fn" data-k="B">BIN</button>
+      <button class="fn" data-k="not">NOT</button>
+      <button class="fn" data-k="and">AND</button>
+      <button class="fn" data-k="or">OR</button>
+      <button class="fn" data-k="xor">XOR</button>
+      <button class="fn" data-k="shl">«</button>
+      <button class="fn" data-k="shr">»</button>
+      <button class="danger" data-k="C">C</button>
+      <button class="fn" data-k="back">⌫</button>
+      <button data-pd="A">A</button><button data-pd="B">B</button><button data-pd="C">C</button><button data-pd="D">D</button>
+      <button data-pd="E">E</button><button data-pd="F">F</button>
+      <button data-pd="7">7</button><button data-pd="8">8</button>
+      <button data-pd="9">9</button><button data-pd="4">4</button><button data-pd="5">5</button><button data-pd="6">6</button>
+      <button data-pd="1">1</button><button data-pd="2">2</button><button data-pd="3">3</button><button data-pd="0">0</button>
+      <button class="op eq wide" data-k="=">=</button>
+    </div>
   </div>
 
   <div class="history">
@@ -181,209 +244,466 @@
     <div id="history-list"></div>
   </div>
 
-  <footer>小时候的练习存档 · <b>现在是真·计算器了</b> /滑稽</footer>
+  <footer>小时候的练习存档 · <b>现在是真·计算器了</b> /滑稽 · <span id="ver">v2.0</span></footer>
 </div>
 
 <script>
 (function () {
   'use strict';
-  var valueEl = document.getElementById('value');
-  var exprEl = document.getElementById('expr');
-  var huajiEl = document.getElementById('huaji');
-  var historyList = document.getElementById('history-list');
-  var history = [];
 
-  var acc = null;        // 累积值
-  var op = null;         // 当前运算符：+ − × ÷
-  var cur = '';          // 当前输入
-  var justEval = false;  // 刚按过 =
-  var error = false;
+  /* ================= 通用工具 ================= */
+  function $(id) { return document.getElementById(id); }
+  var valueEl = $('value'), exprEl = $('expr'), huajiEl = $('huaji'),
+      historyEl = $('history-list'), memEl = $('mem-tag'),
+      memBar = $('mem-bar'), app = $('app'),
+      degBtn = $('deg-btn'), themeBtn = $('theme-btn');
 
-  var MAX_LEN = 12;
+  var LS = { hist: 'huaji.calc.history.v2', mem: 'huaji.calc.mem', theme: 'huaji.calc.theme', mode: 'huaji.calc.mode', rad: 'huaji.calc.rad' };
+  function lsGet(k, def) { try { var v = localStorage.getItem(k); return v == null ? def : JSON.parse(v); } catch (e) { return def; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 
+  var state = {
+    mode: lsGet(LS.mode, 'std'),
+    rad: lsGet(LS.rad, false),
+    theme: lsGet(LS.theme, 'light')
+  };
+
+  var history = lsGet(LS.hist, []);
+  var memory = lsGet(LS.mem, null);
+
+  /* ================= 显示 ================= */
   function fmt(n) {
     if (typeof n !== 'number' || !isFinite(n)) return '—';
     if (Number.isInteger(n) && Math.abs(n) < 1e15) return String(n);
     var t = parseFloat(n.toPrecision(12));
     return String(t);
   }
-
   function render() {
-    var s = cur === '' ? fmt(acc == null ? 0 : acc) : cur;
-    if (s.length > 14) { valueEl.classList.add('small'); } else { valueEl.classList.remove('small'); }
+    if (state.mode === 'prog') { updateProgDisplay(); return; }
+    var s = expr === '' ? fmt(lastResult == null ? 0 : lastResult) : expr;
+    if (s.length > 14) valueEl.classList.add('small'); else valueEl.classList.remove('small');
     valueEl.textContent = s;
-    exprEl.innerHTML = '&nbsp;';
-    if (acc != null && op) {
-      exprEl.textContent = fmt(acc) + ' ' + op + (cur !== '' ? ' ' + cur : '');
-    }
+    exprEl.textContent = expr === '' ? '\u00a0' : expr;
     valueEl.scrollLeft = valueEl.scrollWidth;
   }
-
   function huaji(msg) {
     huajiEl.textContent = msg;
     clearTimeout(huaji._t);
-    huaji._t = setTimeout(function () { huajiEl.textContent = ''; }, 2200);
+    huaji._t = setTimeout(function () { huajiEl.textContent = ''; }, 2400);
+  }
+  function setMode(m) {
+    state.mode = m; lsSet(LS.mode, m);
+    document.querySelectorAll('.mode-tab').forEach(function (b) { b.classList.toggle('active', b.dataset.mode === m); });
+    document.querySelector('.panel-std').style.display = m === 'std' ? '' : 'none';
+    document.querySelector('.panel-sci').style.display = m === 'sci' ? '' : 'none';
+    document.querySelector('.panel-prog').style.display = m === 'prog' ? '' : 'none';
+    memBar.style.display = m === 'prog' ? 'none' : '';
+    $('prog-rows').style.display = m === 'prog' ? 'flex' : 'none';
+    if (m === 'prog') updateProgDisplay(); else render();
   }
 
-  function clearAll() {
-    acc = null; op = null; cur = ''; justEval = false; error = false;
-    render();
+  /* ================= 历史（本地持久化） ================= */
+  function pushHistory(exprStr, res) {
+    history.unshift({ expr: exprStr, res: res });
+    if (history.length > 30) history.pop();
+    lsSet(LS.hist, history);
+    renderHistory();
   }
-
-  function calc(a, o, b) {
-    switch (o) {
-      case '+': return a + b;
-      case '−': return a - b;
-      case '×': return a * b;
-      case '÷': return b === 0 ? null : a / b;
-    }
-    return null;
-  }
-
-  function pushHistory(expr, res) {
-    history.unshift({ expr: expr, res: res });
-    if (history.length > 8) history.pop();
-    historyList.innerHTML = '';
-    if (history.length === 0) {
-      historyList.innerHTML = '<div class="empty">还没有记录，来算一题吧</div>';
-      return;
-    }
+  function renderHistory() {
+    historyEl.innerHTML = '';
+    if (history.length === 0) { historyEl.innerHTML = '<div class="empty">还没有记录，来算一题吧</div>'; return; }
     history.forEach(function (h) {
-      var row = document.createElement('div');
-      row.className = 'row';
+      var row = document.createElement('div'); row.className = 'row';
       var l = document.createElement('span'); l.textContent = h.expr;
       var r = document.createElement('span'); r.textContent = h.res;
       row.appendChild(l); row.appendChild(r);
       row.addEventListener('click', function () {
-        cur = fmt(parseFloat(h.res));
-        acc = null; op = null; justEval = true; error = false;
+        if (state.mode === 'prog') return;
+        expr = ''; lastResult = parseFloat(h.res); justEval = true;
         render();
       });
-      historyList.appendChild(row);
+      historyEl.appendChild(row);
     });
   }
-  if (history.length === 0) historyList.innerHTML = '<div class="empty">还没有记录，来算一题吧</div>';
 
-  function pressDigit(d) {
-    if (error) clearAll();
-    if (justEval) { cur = ''; justEval = false; }
-    if (cur.replace('-', '').replace('.', '').length >= MAX_LEN) return;
-    cur += d;
+  /* ================= 记忆键 ================= */
+  function updateMem() {
+    memEl.textContent = memory == null ? '' : 'M';
+    document.querySelectorAll('.mem-bar button[data-m="MC"], .mem-bar button[data-m="MR"]').forEach(function (b) { b.disabled = memory == null; });
+  }
+  memBar.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b || state.mode === 'prog') return;
+    var m = b.dataset.m;
+    var v = parseFloat(expr !== '' ? expr : (lastResult != null ? lastResult : 0));
+    if (isNaN(v)) return;
+    if (m === 'M+') memory = (memory || 0) + v;
+    else if (m === 'M−') memory = (memory || 0) - v;
+    else if (m === 'MR') { expr = ''; lastResult = memory; justEval = true; render(); return; }
+    else if (m === 'MC') memory = null;
+    lsSet(LS.mem, memory); updateMem();
+  });
+
+  /* ================= 表达式求值引擎 =================
+     tokenize → shunting-yard → 后缀求值（函数/常量/隐式乘/一元负/阶乘/百分号） */
+  var FUNCS = { sin:1, cos:1, tan:1, asin:1, acos:1, atan:1, sqrt:1, cbrt:1, abs:1, ln:1, log:1, log2:1, exp:1 };
+  var CONSTS = { 'π': Math.PI, 'e': Math.E };
+  var PREC = { '+':1, '-':1, '−':1, '×':2, '*':2, '÷':2, '/':2, '^':3, '%':4, '!':4 };
+
+  function tokenize(s) {
+    var toks = [], i = 0, n = s.length;
+    function isOpChar(c) { return '+-−×*÷/^!%()'.indexOf(c) >= 0; }
+    while (i < n) {
+      var c = s[i];
+      if (c === ' ') { i++; continue; }
+      if (/[0-9.]/.test(c)) {
+        var j = i;
+        while (j < n && /[0-9.]/.test(s[j])) j++;
+        var numStr = s.slice(i, j);
+        if ((numStr.match(/\./g) || []).length > 1) throw new Error('bad number');
+        toks.push({ t: 'num', v: parseFloat(numStr) });
+        i = j; continue;
+      }
+      if (/[a-zA-Z]/.test(c)) {
+        var k = i; while (k < n && /[a-zA-Z]/.test(s[k])) k++;
+        var word = s.slice(i, k);
+        if (word === 'e') { toks.push({ t: 'const', v: Math.E }); }
+        else if (FUNCS[word] != null) { toks.push({ t: 'fn', name: word }); }
+        else throw new Error('unknown: ' + word);
+        i = k; continue;
+      }
+      if (c === 'π') { toks.push({ t: 'const', v: Math.PI }); i++; continue; }
+      if (c === '(') { toks.push({ t: 'lp' }); i++; continue; }
+      if (c === ')') { toks.push({ t: 'rp' }); i++; continue; }
+      if (c === '!') { toks.push({ t: 'post', op: '!' }); i++; continue; }
+      if (c === '%') { toks.push({ t: 'post', op: '%' }); i++; continue; }
+      if (isOpChar(c)) {
+        var op = c;
+        var prev = toks.length ? toks[toks.length - 1] : null;
+        var unary = (op === '-' || op === '−') && (!prev || prev.t === 'op' || prev.t === 'lp' || prev.t === 'fn' || prev.t === 'const');
+        toks.push({ t: unary ? 'unary' : 'op', op: unary ? 'u-' : op });
+        i++; continue;
+      }
+      throw new Error('bad char: ' + c);
+    }
+    // 隐式乘法：数/右括号/阶乘/百分号 后跟 (、const、fn → 插入 ×
+    var out = [];
+    for (var a = 0; a < toks.length; a++) {
+      var cur = toks[a];
+      if (a > 0) {
+        var pv = toks[a - 1];
+        var leftEnd = pv.t === 'num' || pv.t === 'const' || pv.t === 'rp' || pv.t === 'post';
+        var rightStart = cur.t === 'const' || (cur.t === 'fn') || cur.t === 'lp';
+        if (leftEnd && rightStart) out.push({ t: 'op', op: '×' });
+      }
+      out.push(cur);
+    }
+    return out;
+  }
+
+  function toPostfix(toks) {
+    var out = [], ops = [];
+    function popOp() {
+      var x = ops.pop();
+      if (x != null && x !== '(') out.push(x);
+    }
+    for (var i = 0; i < toks.length; i++) {
+      var t = toks[i];
+      if (t.t === 'num' || t.t === 'const') { out.push(t); continue; }
+      if (t.t === 'fn') { ops.push({ t: 'fn', name: t.name }); continue; }
+      if (t.t === 'lp') { ops.push('('); continue; }
+      if (t.t === 'rp') {
+        while (ops.length && ops[ops.length - 1] !== '(') popOp();
+        if (!ops.length) throw new Error('( mismatch');
+        ops.pop();
+        if (ops.length && ops[ops.length - 1].t === 'fn') popOp();
+        continue;
+      }
+      if (t.t === 'unary') { ops.push({ t: 'op', op: 'u-' }); continue; }
+      if (t.t === 'op') {
+        var pr = PREC[t.op], rightAssoc = t.op === '^';
+        while (ops.length && ops[ops.length - 1] !== '(' && ops[ops.length - 1].t === 'op') {
+          var topPr = PREC[ops[ops.length - 1].op] || 2;
+          if (topPr > pr || (topPr === pr && !rightAssoc)) popOp(); else break;
+        }
+        ops.push({ t: 'op', op: t.op });
+        continue;
+      }
+      if (t.t === 'post') {
+        while (ops.length && ops[ops.length - 1] !== '(' && ops[ops.length - 1].t === 'op') {
+          var tp = PREC[ops[ops.length - 1].op] || 0;
+          if (tp > PREC[t.op]) popOp(); else break;
+        }
+        out.push({ t: 'op', op: t.op });
+        continue;
+      }
+    }
+    while (ops.length) {
+      if (ops[ops.length - 1] === '(') throw new Error('( mismatch');
+      popOp();
+    }
+    return out;
+  }
+
+  function applyFn(name, x) {
+    var rad = state.rad;
+    if (name === 'sin') return Math.sin(rad ? x : x * Math.PI / 180);
+    if (name === 'cos') return Math.cos(rad ? x : x * Math.PI / 180);
+    if (name === 'tan') return Math.tan(rad ? x : x * Math.PI / 180);
+    if (name === 'asin') return rad ? Math.asin(x) : Math.asin(x) * 180 / Math.PI;
+    if (name === 'acos') return rad ? Math.acos(x) : Math.acos(x) * 180 / Math.PI;
+    if (name === 'atan') return rad ? Math.atan(x) : Math.atan(x) * 180 / Math.PI;
+    if (name === 'sqrt') return Math.sqrt(x);
+    if (name === 'cbrt') return Math.cbrt(x);
+    if (name === 'abs') return Math.abs(x);
+    if (name === 'ln') return Math.log(x);
+    if (name === 'log') return Math.log10(x);
+    if (name === 'log2') return Math.log2(x);
+    if (name === 'exp') return Math.exp(x);
+    throw new Error('bad fn');
+  }
+
+  function evalPostfix(post) {
+    var st = [];
+    for (var i = 0; i < post.length; i++) {
+      var t = post[i];
+      if (t.t === 'num') { st.push(t.v); continue; }
+      if (t.t === 'const') { st.push(t.v); continue; }
+      if (t.t === 'fn') {
+        if (st.length < 1) throw new Error('fn arg');
+        var x = st.pop();
+        st.push(applyFn(t.name, x));
+        continue;
+      }
+      var o = t.op;
+      if (o === 'u-') { if (!st.length) throw new Error('unary'); st.push(-st.pop()); continue; }
+      if (o === '!') {
+        if (!st.length) throw new Error('!');
+        var f = st.pop();
+        if (f < 0 || f % 1 !== 0 || f > 170) throw new Error('factorial');
+        var r = 1; for (var q = 2; q <= f; q++) r *= q;
+        st.push(r); continue;
+      }
+      if (o === '%') { if (!st.length) throw new Error('%'); st.push(st.pop() / 100); continue; }
+      if (st.length < 2) throw new Error('op arg');
+      var b = st.pop(), a = st.pop();
+      if (o === '+') st.push(a + b);
+      else if (o === '-' || o === '−') st.push(a - b);
+      else if (o === '×' || o === '*') st.push(a * b);
+      else if (o === '÷' || o === '/') { if (b === 0) throw new Error('div0'); st.push(a / b); }
+      else if (o === '^') st.push(Math.pow(a, b));
+      else throw new Error('bad op');
+    }
+    if (st.length !== 1) throw new Error('expr');
+    return st[0];
+  }
+
+  function evalExpr(s) {
+    var post = toPostfix(tokenize(s));
+    return evalPostfix(post);
+  }
+
+  /* ================= 标准/科学 模式 ================= */
+  var expr = '', lastResult = null, justEval = false;
+
+  function appendStr(s) {
+    if (expr.length > 200) return;
+    if (justEval) { expr = ''; lastResult = null; justEval = false; }
+    expr += s;
     render();
   }
-
-  function pressOp(o) {
-    if (error) clearAll();
-    justEval = false;
-    if (cur === '') {
-      if (op != null) { op = o; render(); }
-      return;
-    }
-    var v = parseFloat(cur);
-    if (acc != null && op != null) {
-      var r = calc(acc, op, v);
-      if (r === null) { errorState(); return; }
-      pushHistory(fmt(acc) + ' ' + op + ' ' + fmt(v), fmt(r));
-      acc = r;
-    } else {
-      acc = v;
-    }
-    op = o;
-    cur = '';
-    render();
-  }
-
-  function pressEq() {
-    if (error) return;
-    if (op == null) {
-      if (cur === '') { huaji('你是来搞笑的吧！/滑稽'); return; }
-      return;
-    }
-    var v = cur === '' ? acc : parseFloat(cur);
-    var r = calc(acc, op, v);
-    if (r === null) { errorState(); return; }
-    var expr = fmt(acc) + ' ' + op + ' ' + fmt(v);
-    pushHistory(expr, fmt(r));
-    acc = r;
-    op = null;
-    cur = '';
-    justEval = true;
-    render();
-    if (acc === 0 && v === 0) huaji('0 ÷ 0 = 你是来搞笑的吧！/滑稽');
-  }
-
-  function errorState() {
-    error = true; acc = null; op = null; cur = '';
-    valueEl.textContent = '算不出来！';
-    valueEl.classList.add('small');
-    huaji('哈哈，这个算不出来！/滑稽');
-    setTimeout(function () { clearAll(); }, 900);
-  }
-
+  function clearAll() { expr = ''; lastResult = null; justEval = false; render(); }
   function backspace() {
-    if (error || justEval) { clearAll(); return; }
-    cur = cur.slice(0, -1);
-    render();
+    if (expr === '') return;
+    expr = expr.slice(0, -1); justEval = false; render();
   }
-
-  function percent() {
-    if (error) return;
-    if (justEval) { cur = ''; justEval = false; }
-    if (cur === '') {
-      if (acc != null) { cur = fmt(acc); acc = null; op = null; }
-      else return;
-    }
-    cur = fmt(parseFloat(cur) / 100);
-    render();
-  }
-
-  function negate() {
-    if (error) return;
-    if (cur === '') {
-      if (acc != null) { acc = -acc; render(); }
+  function doEquals() {
+    if (expr.trim() === '') { huaji('你是来搞笑的吧！/滑稽'); return; }
+    var re;
+    try { re = evalExpr(expr); }
+    catch (e) {
+      valueEl.textContent = '算不出来！'; valueEl.classList.add('small');
+      huaji(e.message === 'div0' ? '哈哈，除零算不出来！/滑稽' : '这算式太滑稽了！/滑稽');
+      setTimeout(clearAll, 950);
       return;
     }
-    if (cur === '0') return;
-    if (cur.startsWith('-')) cur = cur.slice(1); else cur = '-' + cur;
+    var res = fmt(re);
+    pushHistory(expr + ' =', res);
+    expr = ''; lastResult = re; justEval = true;
     render();
+    if (!isFinite(re)) { valueEl.textContent = '算不出来！'; huaji('哈哈，这个算不出来！/滑稽'); }
   }
 
-  // 按键
-  document.getElementById('keys').addEventListener('click', function (e) {
-    var btn = e.target.closest('button');
-    if (!btn) return;
-    var k = btn.dataset.k;
-    if (/^\d$/.test(k)) pressDigit(k);
-    else if (k === '.') pressDigit('.');
-    else if (k === '+' || k === '−' || k === '×' || k === '÷') pressOp(k);
-    else if (k === '=') pressEq();
-    else if (k === 'C') clearAll();
-    else if (k === 'back') backspace();
-    else if (k === 'percent') percent();
-    else if (k === 'neg') negate();
+  /* ================= 程序员模式：64 位 BigInt 进制 + 位运算 ================= */
+  var P = { base: 'DEC', acc: null, op: null, cur: '0', justOp: false };
+  var BITOPS = { and: 'AND', or: 'OR', xor: 'XOR' };
+  var BASE_DIGITS = { DEC: /[0-9]/, HEX: /[0-9A-Fa-f]/, OCT: /[0-7]/, BIN: /[01]/ };
+
+  function pParse(s) {
+    if (s === '') s = '0';
+    var bign;
+    if (P.base === 'HEX') bign = BigInt('0x' + s);
+    else if (P.base === 'OCT') bign = BigInt('0o' + s);
+    else if (P.base === 'BIN') bign = BigInt('0b' + s);
+    else bign = BigInt(s || '0');
+    return BigInt.asIntN(64, bign);
+  }
+  function pToBase(v) {
+    var masked = BigInt.asUintN(64, v);
+    if (P.base === 'DEC') return v.toString();
+    if (P.base === 'HEX') return masked.toString(16).toUpperCase();
+    if (P.base === 'OCT') return masked.toString(8);
+    return masked.toString(2);
+  }
+  function pCur() { return P.cur === '' ? (P.acc == null ? 0n : P.acc) : pParse(P.cur); }
+  function pSet(v) { P.cur = pToBase(v); updateProgDisplay(); }
+  function pApplyBinary(op, a, b) {
+    if (op === 'AND') return BigInt.asIntN(64, a & b);
+    if (op === 'OR') return BigInt.asIntN(64, a | b);
+    if (op === 'XOR') return BigInt.asIntN(64, a ^ b);
+    return null;
+  }
+  function pDigit(d) {
+    if (!BASE_DIGITS[P.base].test(d)) return;
+    if (P.justOp) { P.cur = ''; P.justOp = false; }
+    var next = P.cur === '' || P.cur === '0' ? d : P.cur + d;
+    if (next.replace(/^0+/, '').length > 16) return;
+    P.cur = next;
+    updateProgDisplay();
+  }
+  function pBinary(op) {
+    var cur = pCur();
+    if (P.acc == null || P.op == null) { P.acc = cur; P.op = op; P.cur = ''; P.justOp = true; }
+    else { P.acc = pApplyBinary(P.op, P.acc, cur); P.op = op; P.cur = ''; P.justOp = true; }
+    updateProgDisplay();
+  }
+  function pUnary(k) {
+    var v = pCur();
+    if (k === 'not') v = BigInt.asIntN(64, ~v);
+    else if (k === 'shl') v = BigInt.asIntN(64, v << 1n);
+    else if (k === 'shr') v = BigInt.asIntN(64, v >> 1n);
+    P.cur = pToBase(v); P.justOp = false;
+    updateProgDisplay();
+  }
+  function pEquals() {
+    if (P.acc != null && P.op != null) {
+      var r = pApplyBinary(P.op, P.acc, pCur());
+      P.cur = pToBase(r); P.acc = null; P.op = null; P.justOp = false;
+      updateProgDisplay();
+    }
+  }
+  function pClear() { P.acc = null; P.op = null; P.cur = '0'; P.justOp = false; updateProgDisplay(); }
+  function pBack() { if (!P.justOp && P.cur.length > 1) { P.cur = P.cur.slice(0, -1); } else if (!P.justOp) { P.cur = '0'; } updateProgDisplay(); }
+  function pSetBase(b) {
+    if (P.base === b) return;
+    var v = pCur();
+    P.base = b;
+    P.cur = pToBase(v);
+    P.acc = null; P.op = null; P.justOp = false;
+    updateProgDisplay();
+  }
+  function updateProgDisplay() {
+    var v = pCur();
+    $('prg-dec').textContent = v.toString();
+    $('prg-hex').textContent = BigInt.asUintN(64, v).toString(16).toUpperCase();
+    $('prg-oct').textContent = BigInt.asUintN(64, v).toString(8);
+    $('prg-bin').textContent = BigInt.asUintN(64, v).toString(2);
+    document.querySelectorAll('.prow').forEach(function (r) { r.classList.toggle('active', r.dataset.pb === P.base); });
+    document.querySelectorAll('.panel-prog button[data-pd]').forEach(function (b) {
+      var d = b.dataset.pd;
+      b.disabled = !BASE_DIGITS[P.base].test(d);
+    });
+    var mainStr = (P.op ? P.op + ' ' : '') + (P.cur === '' ? '' : P.cur);
+    valueEl.textContent = mainStr === '' ? v.toString() : mainStr;
+    valueEl.classList.remove('small');
+    exprEl.textContent = P.acc == null ? '\u00a0' : P.acc + ' ' + (P.op || '');
+  }
+
+  /* ================= 按键分发 ================= */
+  document.querySelectorAll('.keys').forEach(function (panel) {
+    panel.addEventListener('click', function (e) {
+      var btn = e.target.closest('button'); if (!btn) return;
+      var k = btn.dataset.k, pd = btn.dataset.pd;
+      if (state.mode === 'prog') {
+        if (pd != null) { pDigit(pd); return; }
+        if (k === 'D') pSetBase('DEC');
+        else if (k === 'H') pSetBase('HEX');
+        else if (k === 'O') pSetBase('OCT');
+        else if (k === 'B') pSetBase('BIN');
+        else if (k === 'and' || k === 'or' || k === 'xor') pBinary(BITOPS[k]);
+        else if (k === 'not' || k === 'shl' || k === 'shr') pUnary(k);
+        else if (k === '=') pEquals();
+        else if (k === 'C') pClear();
+        else if (k === 'back') pBack();
+        return;
+      }
+      if (pd != null) return;
+      if (/^[0-9.]$/.test(k)) { appendStr(k); return; }
+      if (k === 'C') { clearAll(); return; }
+      if (k === 'back') { backspace(); return; }
+      if (k === '=') { doEquals(); return; }
+      if (k === 'sqrt2') { appendStr('^2'); return; }
+      if (k === '1/x') { appendStr('^(0-1)'); return; }
+      if (k === 'pi2') { appendStr('2×π'); return; }
+      if (k === '√(') { appendStr('sqrt('); return; }
+      if (k === 'deg') { state.rad = !state.rad; lsSet(LS.rad, state.rad); degBtn.textContent = state.rad ? 'RAD' : 'DEG'; huaji(state.rad ? '已切换到弧度 RAD' : '已切换到角度 DEG'); return; }
+      appendStr(k);
+    });
+  });
+
+  // 模式切换
+  document.querySelectorAll('.mode-tab').forEach(function (b) {
+    b.addEventListener('click', function () { setMode(b.dataset.mode); });
+  });
+
+  // 主题
+  function applyTheme() {
+    app.setAttribute('data-theme', state.theme);
+    themeBtn.textContent = state.theme === 'dark' ? '☀️' : '🌙';
+  }
+  themeBtn.addEventListener('click', function () {
+    state.theme = state.theme === 'dark' ? 'light' : 'dark';
+    lsSet(LS.theme, state.theme);
+    applyTheme();
   });
 
   // 键盘
-  var keyMap = {
-    '*': '×', '/': '÷', '-': '−', '+': '+', '%': 'percent',
-    'Enter': '=', '=': '=', 'Backspace': 'back', 'Escape': 'C', 'Delete': 'C'
-  };
+  var KEY = { '+':'+', '-':'−', '*':'×', '/':'÷', '^':'^', '(':'(', ')':')', '!':'!', '%':'%', 'q':'π', 'w':'e' };
   document.addEventListener('keydown', function (e) {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
-    if (/^\d$/.test(e.key)) { pressDigit(e.key); e.preventDefault(); return; }
-    if (e.key === '.') { pressDigit('.'); e.preventDefault(); return; }
-    var k = keyMap[e.key];
-    if (k) {
-      if (k === '=') pressEq();
-      else if (k === 'back') backspace();
-      else if (k === 'C') clearAll();
-      else if (k === 'percent') percent();
-      else if (k === '×' || k === '÷' || k === '−' || k === '+') pressOp(k);
-      e.preventDefault();
+    if (state.mode === 'prog') {
+      var d = e.key.toUpperCase();
+      if (/^[0-9A-F]$/.test(d) && BASE_DIGITS[P.base].test(d)) { pDigit(d); e.preventDefault(); }
+      else if (e.key === 'Escape') { pClear(); e.preventDefault(); }
+      else if (e.key === 'Backspace') { pBack(); e.preventDefault(); }
+      else if (e.key === 'Enter' || e.key === '=') { pEquals(); e.preventDefault(); }
+      return;
     }
+    if (/^[0-9.]$/.test(e.key)) { appendStr(e.key); e.preventDefault(); return; }
+    if (e.key === 'Enter' || e.key === '=' ) { doEquals(); e.preventDefault(); return; }
+    if (e.key === 'Backspace') { backspace(); e.preventDefault(); return; }
+    if (e.key === 'Escape') { clearAll(); e.preventDefault(); return; }
+    if (KEY[e.key]) { appendStr(KEY[e.key]); e.preventDefault(); }
   });
 
-  render();
+  /* ================= 启动 ================= */
+  applyTheme();
+  degBtn.textContent = state.rad ? 'RAD' : 'DEG';
+  setMode(state.mode);
+  updateMem();
+  renderHistory();
+
+  // 测试钩子（无害，供自动化验证）
+  window.__calc = {
+    evalExpr: evalExpr,
+    state: state,
+    P: P,
+    pDigit: pDigit, pBinary: pBinary, pUnary: pUnary, pEquals: pEquals,
+    pSetBase: pSetBase, pClear: pClear, pBack: pBack,
+    getExpr: function () { return expr; }, setExpr: function (s) { expr = s; },
+    doEquals: doEquals,
+    getLastResult: function () { return lastResult; },
+    setRad: function (r) { state.rad = r; }
+  };
 })();
 </script>
 </body>
