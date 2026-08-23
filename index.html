@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>滑稽计算器 · Huaji Calculator</title>
+<style>
+  :root {
+    --green: #38b26e;
+    --green-dark: #2c9460;
+    --green-deep: #1f7a4e;
+    --ink: #1b1e2b;
+    --card: #ffffff;
+    --line: #e3e8ee;
+    --muted: #8a93a6;
+    --danger: #e35d5d;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+    background: linear-gradient(160deg, #eef7f1 0%, #e2f0e8 55%, #d7e9df 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 12px;
+    color: var(--ink);
+  }
+  .app {
+    width: 100%;
+    max-width: 380px;
+    background: var(--card);
+    border-radius: 22px;
+    box-shadow: 0 18px 50px rgba(31, 122, 78, 0.18);
+    overflow: hidden;
+  }
+  header {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-deep) 100%);
+    color: #fff;
+    padding: 16px 18px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  header img { width: 42px; height: 42px; border-radius: 50%; background: #fff; padding: 2px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  header h1 { font-size: 20px; letter-spacing: 1px; }
+  header .sub { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+  .display {
+    background: var(--ink);
+    color: #fff;
+    padding: 18px 20px 14px;
+    text-align: right;
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .expr { color: #9fb2a8; font-size: 14px; min-height: 20px; word-break: break-all; }
+  .value {
+    font-size: 40px;
+    font-weight: 600;
+    margin-top: 6px;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+  .value::-webkit-scrollbar { display: none; }
+  .value.small { font-size: 26px; }
+  .huaji-line {
+    color: #ffd76a;
+    font-size: 13px;
+    min-height: 18px;
+    margin-top: 6px;
+    font-weight: 600;
+  }
+  .keys {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding: 14px 16px 16px;
+  }
+  button {
+    border: none;
+    border-radius: 14px;
+    font-size: 20px;
+    font-weight: 600;
+    font-family: inherit;
+    padding: 15px 0;
+    cursor: pointer;
+    background: #f1f4f8;
+    color: var(--ink);
+    transition: transform 0.05s, filter 0.15s;
+    user-select: none;
+    touch-action: manipulation;
+  }
+  button:hover { filter: brightness(0.96); }
+  button:active { transform: scale(0.96); }
+  button.fn { background: #e5ebf2; color: #4a5568; font-size: 17px; }
+  button.op { background: var(--green); color: #fff; font-size: 22px; }
+  button.op:hover { filter: brightness(1.05); }
+  button.eq { background: var(--green-deep); color: #fff; }
+  button.danger { background: #fdecec; color: var(--danger); }
+  .history {
+    border-top: 1px solid var(--line);
+    padding: 10px 16px 14px;
+    max-height: 180px;
+    overflow-y: auto;
+  }
+  .history h2 { font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 6px; }
+  .history .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 5px 8px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .history .row:hover { background: #f0f7f3; }
+  .history .row span:first-child { color: var(--muted); }
+  .history .row span:last-child { font-weight: 600; color: var(--green-dark); }
+  .history .empty { font-size: 12px; color: #b6becb; padding: 4px 8px; }
+  footer {
+    text-align: center;
+    padding: 12px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  footer b { color: var(--green-dark); }
+  @media (max-width: 400px) {
+    .value { font-size: 34px; }
+    button { padding: 13px 0; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <img src="icons/icon-192.png" alt="rabbit" onerror="this.style.visibility='hidden'">
+    <div>
+      <h1>滑稽计算器</h1>
+      <div class="sub">Huaji Calculator · made by rabbit</div>
+    </div>
+  </header>
+
+  <div class="display">
+    <div class="expr" id="expr">&nbsp;</div>
+    <div class="value" id="value">0</div>
+    <div class="huaji-line" id="huaji"></div>
+  </div>
+
+  <div class="keys" id="keys">
+    <button class="fn" data-k="C">C</button>
+    <button class="fn" data-k="back">⌫</button>
+    <button class="fn" data-k="percent">%</button>
+    <button class="op" data-k="÷">÷</button>
+
+    <button data-k="7">7</button>
+    <button data-k="8">8</button>
+    <button data-k="9">9</button>
+    <button class="op" data-k="×">×</button>
+
+    <button data-k="4">4</button>
+    <button data-k="5">5</button>
+    <button data-k="6">6</button>
+    <button class="op" data-k="−">−</button>
+
+    <button data-k="1">1</button>
+    <button data-k="2">2</button>
+    <button data-k="3">3</button>
+    <button class="op" data-k="+">+</button>
+
+    <button class="fn" data-k="neg">±</button>
+    <button data-k="0">0</button>
+    <button data-k=".">.</button>
+    <button class="op eq" data-k="=">=</button>
+  </div>
+
+  <div class="history">
+    <h2>历史记录（点击回填）</h2>
+    <div id="history-list"></div>
+  </div>
+
+  <footer>小时候的练习存档 · <b>现在是真·计算器了</b> /滑稽</footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var valueEl = document.getElementById('value');
+  var exprEl = document.getElementById('expr');
+  var huajiEl = document.getElementById('huaji');
+  var historyList = document.getElementById('history-list');
+  var history = [];
+
+  var acc = null;        // 累积值
+  var op = null;         // 当前运算符：+ − × ÷
+  var cur = '';          // 当前输入
+  var justEval = false;  // 刚按过 =
+  var error = false;
+
+  var MAX_LEN = 12;
+
+  function fmt(n) {
+    if (typeof n !== 'number' || !isFinite(n)) return '—';
+    if (Number.isInteger(n) && Math.abs(n) < 1e15) return String(n);
+    var t = parseFloat(n.toPrecision(12));
+    return String(t);
+  }
+
+  function render() {
+    var s = cur === '' ? fmt(acc == null ? 0 : acc) : cur;
+    if (s.length > 14) { valueEl.classList.add('small'); } else { valueEl.classList.remove('small'); }
+    valueEl.textContent = s;
+    exprEl.innerHTML = '&nbsp;';
+    if (acc != null && op) {
+      exprEl.textContent = fmt(acc) + ' ' + op + (cur !== '' ? ' ' + cur : '');
+    }
+    valueEl.scrollLeft = valueEl.scrollWidth;
+  }
+
+  function huaji(msg) {
+    huajiEl.textContent = msg;
+    clearTimeout(huaji._t);
+    huaji._t = setTimeout(function () { huajiEl.textContent = ''; }, 2200);
+  }
+
+  function clearAll() {
+    acc = null; op = null; cur = ''; justEval = false; error = false;
+    render();
+  }
+
+  function calc(a, o, b) {
+    switch (o) {
+      case '+': return a + b;
+      case '−': return a - b;
+      case '×': return a * b;
+      case '÷': return b === 0 ? null : a / b;
+    }
+    return null;
+  }
+
+  function pushHistory(expr, res) {
+    history.unshift({ expr: expr, res: res });
+    if (history.length > 8) history.pop();
+    historyList.innerHTML = '';
+    if (history.length === 0) {
+      historyList.innerHTML = '<div class="empty">还没有记录，来算一题吧</div>';
+      return;
+    }
+    history.forEach(function (h) {
+      var row = document.createElement('div');
+      row.className = 'row';
+      var l = document.createElement('span'); l.textContent = h.expr;
+      var r = document.createElement('span'); r.textContent = h.res;
+      row.appendChild(l); row.appendChild(r);
+      row.addEventListener('click', function () {
+        cur = fmt(parseFloat(h.res));
+        acc = null; op = null; justEval = true; error = false;
+        render();
+      });
+      historyList.appendChild(row);
+    });
+  }
+  if (history.length === 0) historyList.innerHTML = '<div class="empty">还没有记录，来算一题吧</div>';
+
+  function pressDigit(d) {
+    if (error) clearAll();
+    if (justEval) { cur = ''; justEval = false; }
+    if (cur.replace('-', '').replace('.', '').length >= MAX_LEN) return;
+    cur += d;
+    render();
+  }
+
+  function pressOp(o) {
+    if (error) clearAll();
+    justEval = false;
+    if (cur === '') {
+      if (op != null) { op = o; render(); }
+      return;
+    }
+    var v = parseFloat(cur);
+    if (acc != null && op != null) {
+      var r = calc(acc, op, v);
+      if (r === null) { errorState(); return; }
+      pushHistory(fmt(acc) + ' ' + op + ' ' + fmt(v), fmt(r));
+      acc = r;
+    } else {
+      acc = v;
+    }
+    op = o;
+    cur = '';
+    render();
+  }
+
+  function pressEq() {
+    if (error) return;
+    if (op == null) {
+      if (cur === '') { huaji('你是来搞笑的吧！/滑稽'); return; }
+      return;
+    }
+    var v = cur === '' ? acc : parseFloat(cur);
+    var r = calc(acc, op, v);
+    if (r === null) { errorState(); return; }
+    var expr = fmt(acc) + ' ' + op + ' ' + fmt(v);
+    pushHistory(expr, fmt(r));
+    acc = r;
+    op = null;
+    cur = '';
+    justEval = true;
+    render();
+    if (acc === 0 && v === 0) huaji('0 ÷ 0 = 你是来搞笑的吧！/滑稽');
+  }
+
+  function errorState() {
+    error = true; acc = null; op = null; cur = '';
+    valueEl.textContent = '算不出来！';
+    valueEl.classList.add('small');
+    huaji('哈哈，这个算不出来！/滑稽');
+    setTimeout(function () { clearAll(); }, 900);
+  }
+
+  function backspace() {
+    if (error || justEval) { clearAll(); return; }
+    cur = cur.slice(0, -1);
+    render();
+  }
+
+  function percent() {
+    if (error) return;
+    if (justEval) { cur = ''; justEval = false; }
+    if (cur === '') {
+      if (acc != null) { cur = fmt(acc); acc = null; op = null; }
+      else return;
+    }
+    cur = fmt(parseFloat(cur) / 100);
+    render();
+  }
+
+  function negate() {
+    if (error) return;
+    if (cur === '') {
+      if (acc != null) { acc = -acc; render(); }
+      return;
+    }
+    if (cur === '0') return;
+    if (cur.startsWith('-')) cur = cur.slice(1); else cur = '-' + cur;
+    render();
+  }
+
+  // 按键
+  document.getElementById('keys').addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    var k = btn.dataset.k;
+    if (/^\d$/.test(k)) pressDigit(k);
+    else if (k === '.') pressDigit('.');
+    else if (k === '+' || k === '−' || k === '×' || k === '÷') pressOp(k);
+    else if (k === '=') pressEq();
+    else if (k === 'C') clearAll();
+    else if (k === 'back') backspace();
+    else if (k === 'percent') percent();
+    else if (k === 'neg') negate();
+  });
+
+  // 键盘
+  var keyMap = {
+    '*': '×', '/': '÷', '-': '−', '+': '+', '%': 'percent',
+    'Enter': '=', '=': '=', 'Backspace': 'back', 'Escape': 'C', 'Delete': 'C'
+  };
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (/^\d$/.test(e.key)) { pressDigit(e.key); e.preventDefault(); return; }
+    if (e.key === '.') { pressDigit('.'); e.preventDefault(); return; }
+    var k = keyMap[e.key];
+    if (k) {
+      if (k === '=') pressEq();
+      else if (k === 'back') backspace();
+      else if (k === 'C') clearAll();
+      else if (k === 'percent') percent();
+      else if (k === '×' || k === '÷' || k === '−' || k === '+') pressOp(k);
+      e.preventDefault();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
