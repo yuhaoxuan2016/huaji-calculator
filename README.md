@@ -19,7 +19,6 @@ huaji calculator
 
 在线地址：
 - GitHub Pages：<https://yuhaoxuan2016.github.io/huaji-calculator/>
-- 腾讯云 CloudBase 静态托管：<https://rabbit-d5gnguauw0cabef7f-1307999692.tcloudbaseapp.com/calc/>
 
 通用特性：
 - **PWA（与刷题宝同款）**：`manifest.webmanifest` + 手写 `sw.js`（离线优先、自动更新），手机/桌面浏览器「安装」后获得独立应用窗口，无网也能用
