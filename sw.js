@@ -1,4 +1,4 @@
-/* 滑稽计算器 Service Worker · v2.2 —— 离线优先，与刷题宝同思路（无构建，手写等价 workbox 预缓存） */
+/* 滑稽计算器 Service Worker · v2.2 —— 离线优先，与小兔错题本同思路（无构建，手写等价 workbox 预缓存） */
 var CACHE = 'huaji-calc-v2.2';
 var ASSETS = [
   './',

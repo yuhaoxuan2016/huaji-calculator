@@ -21,7 +21,7 @@ huaji calculator
 - GitHub Pages：<https://yuhaoxuan2016.github.io/huaji-calculator/>
 
 通用特性：
-- **PWA（与刷题宝同款）**：`manifest.webmanifest` + 手写 `sw.js`（离线优先、自动更新），手机/桌面浏览器「安装」后获得独立应用窗口，无网也能用
+- **PWA（与小兔错题本同款）**：`manifest.webmanifest` + 手写 `sw.js`（离线优先、自动更新），手机/桌面浏览器「安装」后获得独立应用窗口，无网也能用
 - 记忆键（MC / MR / M+ / M−），历史与记忆持久化（localStorage）
 - 深色 / 浅色主题切换
 - 键盘操作（数字 / 运算符 / ^ / ! / % / 括号 / Enter / Backspace / Esc；程序员模式支持 A-F）
